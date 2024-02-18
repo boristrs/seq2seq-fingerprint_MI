@@ -6,7 +6,10 @@ from __future__ import print_function
 import re
 
 import tensorflow as tf
-from tensorflow import gfile
+#from tensorflow import gfile
+# for tensor flow>2
+from tensorflow.io import gfile
+
 
 # pylint: disable=invalid-name
 
