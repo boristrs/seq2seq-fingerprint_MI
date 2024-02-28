@@ -8,7 +8,8 @@ import re
 import tensorflow as tf
 #from tensorflow import gfile
 # for tensor flow>2
-from tensorflow.io import gfile
+#from tensorflow.io import gfile
+from tf.io import gfile 
 
 
 # pylint: disable=invalid-name
