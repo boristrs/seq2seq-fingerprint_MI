@@ -102,9 +102,9 @@ class Seq2SeqModel(object): # pylint: disable=too-many-instance-attributes
         def single_cell():
             """internal single cell for RNN"""
             if use_lstm:
-                ret = tf.contrib.rnn.BasicLSTMCell(hparams.size)
+                ret = tf.compat.v1.estimator.rnn.BasicLSTMCell(hparams.size)
             else:
-                ret = tf.contrib.rnn.GRUCell(hparams.size)
+                ret = tf.compat.v1.estimator.rnn.GRUCell(hparams.size)
             ret = tf.nn.rnn_cell.DropoutWrapper(
                 ret,
                 input_keep_prob=dropout_rate,
@@ -115,9 +115,9 @@ class Seq2SeqModel(object): # pylint: disable=too-many-instance-attributes
             """Sequence to sequence function."""
             cell = single_cell()
             if num_layers > 1:
-                cell = tf.contrib.rnn.MultiRNNCell(
+                cell = tf.compat.v1.estimator.rnn.MultiRNNCell(
                     [single_cell() for _ in xrange(num_layers)])
-            return tf.contrib.legacy_seq2seq.embedding_attention_seq2seq(
+            return tf.compat.v1.estimator.legacy_seq2seq.embedding_attention_seq2seq(
                 encoder_inputs,
                 decoder_inputs,
                 cell,
@@ -147,7 +147,7 @@ class Seq2SeqModel(object): # pylint: disable=too-many-instance-attributes
 
         # Training outputs and losses.
         if forward_only:
-            self.outputs, self.losses = tf.contrib.legacy_seq2seq.model_with_buckets(
+            self.outputs, self.losses = tf.compat.v1.estimator.legacy_seq2seq.model_with_buckets(
                 self.encoder_inputs, self.decoder_inputs, targets,
                 self.target_weights, buckets, lambda x, y: seq2seq_f(x, y, True),
                 softmax_loss_function=softmax_loss_function)
@@ -159,7 +159,7 @@ class Seq2SeqModel(object): # pylint: disable=too-many-instance-attributes
                         for output in self.outputs[b]
                     ]
         else:
-            self.outputs, self.losses = tf.contrib.legacy_seq2seq.model_with_buckets(
+            self.outputs, self.losses = tf.compat.v1.estimator.legacy_seq2seq.model_with_buckets(
                 self.encoder_inputs, self.decoder_inputs, targets,
                 self.target_weights, buckets,
                 lambda x, y: seq2seq_f(x, y, False),
